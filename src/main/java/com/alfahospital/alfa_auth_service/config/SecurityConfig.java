@@ -26,6 +26,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/logout").permitAll()
                         .requestMatchers("/api/auth/validate").permitAll()
+                        .requestMatchers("/api/auth/admin/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
