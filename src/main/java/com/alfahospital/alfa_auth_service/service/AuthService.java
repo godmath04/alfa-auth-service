@@ -33,6 +33,12 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
+                .phone(request.getPhone())
+                .idType(request.getIdType())
+                .idNumber(request.getIdNumber())
+                .birthDate(request.getBirthDate())
+                .city(request.getCity())
+                .gender(request.getGender())
                 .role(Role.PACIENTE)
                 .build();
 
