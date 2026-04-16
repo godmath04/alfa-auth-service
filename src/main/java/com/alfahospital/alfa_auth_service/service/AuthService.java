@@ -5,6 +5,7 @@ import com.alfahospital.alfa_auth_service.domain.User;
 import com.alfahospital.alfa_auth_service.dto.AuthResponse;
 import com.alfahospital.alfa_auth_service.dto.LoginRequest;
 import com.alfahospital.alfa_auth_service.dto.RegisterRequest;
+import com.alfahospital.alfa_auth_service.dto.UserProfileResponse;
 import com.alfahospital.alfa_auth_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,6 +34,12 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
+                .phone(request.getPhone())
+                .idType(request.getIdType())
+                .idNumber(request.getIdNumber())
+                .birthDate(request.getBirthDate())
+                .city(request.getCity())
+                .gender(request.getGender())
                 .role(Role.PACIENTE)
                 .build();
 
@@ -80,5 +87,18 @@ public class AuthService {
     public boolean validateToken(String token) {
         Boolean isBlacklisted = redisTemplate.hasKey("blacklist:" + token);
         return jwtService.isTokenValid(token) && Boolean.FALSE.equals(isBlacklisted);
+    }
+
+    public UserProfileResponse getUserProfileByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
+
+        return UserProfileResponse.builder()
+                .id(user.getId())
+                .nombre(user.getFirstName())
+                .apellido(user.getLastName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .build();
     }
 }
