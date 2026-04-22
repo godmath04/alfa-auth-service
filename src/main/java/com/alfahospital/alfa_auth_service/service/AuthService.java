@@ -32,8 +32,8 @@ public class AuthService {
     private final RedisTemplate<String, String> redisTemplate;
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${app.frontend.url:http://localhost:3000}")
-    private String frontendUrl;
+    @Value("${app.reset-password.url:http://localhost:4200/auth/reset-password}")
+    private String resetPasswordUrl;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -120,7 +120,7 @@ public class AuthService {
         String token = UUID.randomUUID().toString();
         redisTemplate.opsForValue().set("password-reset:" + token, user.getEmail(), Duration.ofHours(1));
 
-        String resetLink = frontendUrl + "/reset-password?token=" + token;
+        String resetLink = resetPasswordUrl + "?token=" + token;
 
         PasswordResetMessage message = PasswordResetMessage.builder()
                 .email(user.getEmail())
