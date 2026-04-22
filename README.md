@@ -157,8 +157,8 @@ Al hacer logout el token ya fue emitido y el cliente lo puede haber almacenado. 
 // AuthService.logout()
 long ttl = expiration.getTime() - System.currentTimeMillis();
 if (ttl > 0) {
-    redisTemplate.opsForValue().set("blacklist:" + token, "logout", Duration.ofMillis(ttl));
-}
+        redisTemplate.opsForValue().set("blacklist:" + token, "logout", Duration.ofMillis(ttl));
+        }
 ```
 
 **Por qué TTL dinámico:** cuando el token expira naturalmente, Redis elimina la entrada automáticamente. No se acumulan tokens viejos ni se requiere limpieza manual.
@@ -181,25 +181,25 @@ Registra un nuevo usuario. El rol asignado siempre es `PACIENTE`.
 **Body:**
 ```json
 {
-  "email":     "juan.perez@email.com",
-  "password":  "MiClave123!",
-  "firstName": "Juan",
-  "lastName":  "Pérez",
-  "phone":     "3001234567",
-  "idType":    "CC",
-  "idNumber":  "1234567890",
-  "birthDate": "1990-05-15",
-  "city":      "Bogotá",
-  "gender":    "M"
+   "email":     "juan.perez@email.com",
+   "password":  "MiClave123!",
+   "firstName": "Juan",
+   "lastName":  "Pérez",
+   "phone":     "3001234567",
+   "idType":    "CC",
+   "idNumber":  "1234567890",
+   "birthDate": "1990-05-15",
+   "city":      "Bogotá",
+   "gender":    "M"
 }
 ```
 
 **Respuesta 200:**
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiJ9...",
-  "email": "juan.perez@email.com",
-  "role":  "PACIENTE"
+   "token": "eyJhbGciOiJIUzI1NiJ9...",
+   "email": "juan.perez@email.com",
+   "role":  "PACIENTE"
 }
 ```
 
@@ -213,17 +213,17 @@ Autentica con email y contraseña.
 **Body:**
 ```json
 {
-  "email":    "medico@alfahospital.com",
-  "password": "MiClave123!"
+   "email":    "medico@alfahospital.com",
+   "password": "MiClave123!"
 }
 ```
 
 **Respuesta 200:**
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiJ9...",
-  "email": "medico@alfahospital.com",
-  "role":  "MEDICO"
+   "token": "eyJhbGciOiJIUzI1NiJ9...",
+   "email": "medico@alfahospital.com",
+   "role":  "MEDICO"
 }
 ```
 
@@ -257,8 +257,8 @@ Lista todos los usuarios registrados.
 **Respuesta 200:**
 ```json
 [
-  { "id": 1, "email": "juan@email.com", "firstName": "Juan", "lastName": "Pérez", "role": "PACIENTE" },
-  { "id": 2, "email": "dr.gomez@alfa.com", "firstName": "Carlos", "lastName": "Gómez", "role": "MEDICO" }
+   { "id": 1, "email": "juan@email.com", "firstName": "Juan", "lastName": "Pérez", "role": "PACIENTE" },
+   { "id": 2, "email": "dr.gomez@alfa.com", "firstName": "Carlos", "lastName": "Gómez", "role": "MEDICO" }
 ]
 ```
 
@@ -282,11 +282,11 @@ Devuelve el perfil básico de un usuario dado su email.
 **Respuesta 200:**
 ```json
 {
-  "id":      42,
-  "nombre":  "Juan",
-  "apellido": "Pérez",
-  "email":   "juan@email.com",
-  "phone":   "3001234567"
+   "id":      42,
+   "nombre":  "Juan",
+   "apellido": "Pérez",
+   "email":   "juan@email.com",
+   "phone":   "3001234567"
 }
 ```
 
