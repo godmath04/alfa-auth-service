@@ -6,14 +6,21 @@ import com.alfahospital.alfa_auth_service.dto.AuthResponse;
 import com.alfahospital.alfa_auth_service.dto.LoginRequest;
 import com.alfahospital.alfa_auth_service.dto.RegisterRequest;
 import com.alfahospital.alfa_auth_service.dto.UserProfileResponse;
+import com.alfahospital.alfa_auth_service.dto.ForgotPasswordRequest;
+import com.alfahospital.alfa_auth_service.dto.ResetPasswordRequest;
+import com.alfahospital.alfa_auth_service.dto.PasswordResetMessage;
+import com.alfahospital.alfa_auth_service.config.RabbitMQConfig;
 import com.alfahospital.alfa_auth_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +30,10 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, String> redisTemplate;
+    private final RabbitTemplate rabbitTemplate;
+
+    @Value("${app.reset-password.url:http://localhost:4200/auth/reset-password}")
+    private String resetPasswordUrl;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -100,5 +111,39 @@ public class AuthService {
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .build();
+    }
+
+    public void forgotPassword(ForgotPasswordRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + request.getEmail()));
+
+        String token = UUID.randomUUID().toString();
+        redisTemplate.opsForValue().set("password-reset:" + token, user.getEmail(), Duration.ofHours(1));
+
+        String resetLink = resetPasswordUrl + "?token=" + token;
+
+        PasswordResetMessage message = PasswordResetMessage.builder()
+                .email(user.getEmail())
+                .resetLink(resetLink)
+                .nombrePaciente(user.getFirstName() + " " + user.getLastName())
+                .build();
+
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.PASSWORD_RESET_ROUTING_KEY, message);
+    }
+
+    public void resetPassword(ResetPasswordRequest request) {
+        String email = redisTemplate.opsForValue().get("password-reset:" + request.getToken());
+
+        if (email == null) {
+            throw new RuntimeException("Token expirado o inválido");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        redisTemplate.delete("password-reset:" + request.getToken());
     }
 }
