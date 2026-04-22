@@ -43,9 +43,9 @@ public class AuthService {
                 .role(Role.PACIENTE)
                 .build();
 
-        userRepository.save(user);
+        user = userRepository.save(user);
 
-        String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
+        String token = jwtService.generateToken(user.getEmail(), user.getRole().name(), user.getId());
 
         return AuthResponse.builder()
                 .token(token)
@@ -62,7 +62,7 @@ public class AuthService {
             throw new RuntimeException("Credenciales inválidas");
         }
 
-        String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
+        String token = jwtService.generateToken(user.getEmail(), user.getRole().name(), user.getId());
 
         return AuthResponse.builder()
                 .token(token)
