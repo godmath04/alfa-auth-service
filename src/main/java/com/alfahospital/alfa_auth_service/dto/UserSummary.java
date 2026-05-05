@@ -15,4 +15,6 @@ public class UserSummary {
     private String firstName;
     private String lastName;
     private Role role;
+    private String idType;
+    private String idNumber;
 }

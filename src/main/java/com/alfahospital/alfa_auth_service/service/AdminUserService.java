@@ -37,6 +37,8 @@ public class AdminUserService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .role(user.getRole())
+                .idType(user.getIdType())
+                .idNumber(user.getIdNumber())
                 .build();
     }
 }
