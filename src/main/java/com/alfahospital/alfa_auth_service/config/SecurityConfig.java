@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/reset-password").permitAll()
                         .requestMatchers("/api/auth/admin/**").permitAll()
                         .requestMatchers("/api/auth/internal/**").permitAll()
+                        .requestMatchers("/api/auth/profile/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

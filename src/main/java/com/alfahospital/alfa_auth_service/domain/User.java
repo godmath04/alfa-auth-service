@@ -49,4 +49,11 @@ public class User {
 
     @Column(name = "gender")
     private String gender;
+
+    @Lob
+    @Column(name = "profile_photo")
+    private byte[] profilePhoto;
+
+    @Column(name = "profile_photo_content_type", length = 50)
+    private String profilePhotoContentType;
 }
