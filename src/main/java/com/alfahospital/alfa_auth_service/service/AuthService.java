@@ -11,6 +11,7 @@ import com.alfahospital.alfa_auth_service.dto.ResetPasswordRequest;
 import com.alfahospital.alfa_auth_service.dto.PasswordResetMessage;
 import com.alfahospital.alfa_auth_service.config.RabbitMQConfig;
 import com.alfahospital.alfa_auth_service.repository.UserRepository;
+import com.alfahospital.alfa_auth_service.util.TelefonoUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,12 +41,14 @@ public class AuthService {
             throw new RuntimeException("El email ya está registrado");
         }
 
+        String normalizedPhone = TelefonoUtils.normalizar(request.getPhone());
+
         User user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
-                .phone(request.getPhone())
+                .phone(normalizedPhone)
                 .idType(request.getIdType())
                 .idNumber(request.getIdNumber())
                 .birthDate(request.getBirthDate())
