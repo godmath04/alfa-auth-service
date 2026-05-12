@@ -12,13 +12,20 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String EXCHANGE = "alfa.exchange";
-    public static final String PASSWORD_RESET_QUEUE = "password.reset.queue";
-    public static final String PASSWORD_RESET_ROUTING_KEY = "password.reset.routing.key";
+    public static final String EXCHANGE                    = "alfa.exchange";
+    public static final String PASSWORD_RESET_QUEUE        = "password.reset.queue";
+    public static final String PASSWORD_RESET_ROUTING_KEY  = "password.reset.routing.key";
+    public static final String WELCOME_GUEST_QUEUE        = "welcome.guest.queue";
+    public static final String WELCOME_GUEST_ROUTING_KEY  = "welcome.guest.routing.key";
 
     @Bean
     public Queue passwordResetQueue() {
         return new Queue(PASSWORD_RESET_QUEUE, true);
+    }
+
+    @Bean
+    public Queue welcomeGuestQueue() {
+        return new Queue(WELCOME_GUEST_QUEUE, true);
     }
 
     @Bean
@@ -29,6 +36,11 @@ public class RabbitMQConfig {
     @Bean
     public Binding bindingPasswordReset(Queue passwordResetQueue, DirectExchange exchange) {
         return BindingBuilder.bind(passwordResetQueue).to(exchange).with(PASSWORD_RESET_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding bindingWelcomeGuest(Queue welcomeGuestQueue, DirectExchange exchange) {
+        return BindingBuilder.bind(welcomeGuestQueue).to(exchange).with(WELCOME_GUEST_ROUTING_KEY);
     }
 
     @Bean

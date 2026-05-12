@@ -1,5 +1,6 @@
 package com.alfahospital.alfa_auth_service.service;
 
+import com.alfahospital.alfa_auth_service.domain.UserStatus;
 import com.alfahospital.alfa_auth_service.domain.Role;
 import com.alfahospital.alfa_auth_service.domain.User;
 import com.alfahospital.alfa_auth_service.dto.AuthResponse;
@@ -52,6 +53,7 @@ public class AuthService {
                 .city(request.getCity())
                 .gender(request.getGender())
                 .role(Role.PACIENTE)
+                .status(UserStatus.ACTIVE)
                 .build();
 
         user = userRepository.save(user);
@@ -69,6 +71,14 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
 
+        if (user.getStatus() == UserStatus.GUEST) {
+            return AuthResponse.builder().status("GUEST").build();
+        }
+
+        if (user.getStatus() == UserStatus.INACTIVE) {
+            throw new RuntimeException("Cuenta inactiva. Contacte al administrador.");
+        }
+
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Credenciales inválidas");
         }
@@ -79,6 +89,7 @@ public class AuthService {
                 .token(token)
                 .email(user.getEmail())
                 .role(user.getRole().name())
+                .status("ACTIVE")
                 .build();
     }
 
@@ -98,6 +109,18 @@ public class AuthService {
     public boolean validateToken(String token) {
         Boolean isBlacklisted = redisTemplate.hasKey("blacklist:" + token);
         return jwtService.isTokenValid(token) && Boolean.FALSE.equals(isBlacklisted);
+    }
+
+    public UserProfileResponse getUserProfileById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
+        return UserProfileResponse.builder()
+                .id(user.getId())
+                .nombre(user.getFirstName())
+                .apellido(user.getLastName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .build();
     }
 
     public UserProfileResponse getUserProfileByEmail(String email) {
