@@ -59,6 +59,9 @@ public class ExecutiveService {
                 .phone(request.getPhone())
                 .idType(request.getIdType())
                 .idNumber(request.getIdNumber())
+                .birthDate(request.getBirthDate())
+                .city(request.getCity())
+                .gender(request.getGender())
                 .role(Role.PACIENTE)
                 .status(UserStatus.GUEST)
                 .build();

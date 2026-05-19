@@ -26,4 +26,7 @@ public class CreateGuestPatientRequest {
     private String idNumber;
 
     private String phone;
+    private String birthDate;
+    private String city;
+    private String gender;
 }
