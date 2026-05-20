@@ -18,8 +18,12 @@ public class InternalUserController {
 
     @GetMapping("/user-by-email")
     public ResponseEntity<UserProfileResponse> getUserByEmail(@RequestParam String email) {
-        UserProfileResponse profile = authService.getUserProfileByEmail(email);
-        return ResponseEntity.ok(profile);
+        return ResponseEntity.ok(authService.getUserProfileByEmail(email));
+    }
+
+    @GetMapping("/user-by-id")
+    public ResponseEntity<UserProfileResponse> getUserById(@RequestParam Long id) {
+        return ResponseEntity.ok(authService.getUserProfileById(id));
     }
 }
 

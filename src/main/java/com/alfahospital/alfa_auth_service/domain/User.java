@@ -32,6 +32,11 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(10) default 'ACTIVE'")
+    @Builder.Default
+    private UserStatus status = UserStatus.ACTIVE;
+
     @Column(name = "phone")
     private String phone;
 

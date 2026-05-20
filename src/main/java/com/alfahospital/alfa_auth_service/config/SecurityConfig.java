@@ -31,6 +31,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/admin/**").permitAll()
                         .requestMatchers("/api/auth/internal/**").permitAll()
                         .requestMatchers("/api/auth/profile/**").permitAll()
+                        .requestMatchers("/api/auth/ejecutivo/**").permitAll()
+                        .requestMatchers("/api/auth/activate-account").permitAll()
                         .anyRequest().authenticated()
                 );
 
