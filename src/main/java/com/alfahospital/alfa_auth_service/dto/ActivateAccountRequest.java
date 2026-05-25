@@ -10,7 +10,7 @@ import lombok.Setter;
 public class ActivateAccountRequest {
 
     @NotBlank
-    private String email;
+    private String token;
 
     @NotBlank
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")

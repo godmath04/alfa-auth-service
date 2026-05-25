@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.redis.core.RedisTemplate;
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +25,10 @@ public class ExecutiveService {
     private final UserRepository    userRepository;
     private final PasswordEncoder   passwordEncoder;
     private final RabbitTemplate    rabbitTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
+
+    @Value("${app.activation.url:http://localhost:4200/auth/activate-account}")
+    private String activationUrl;
 
     @Value("${app.portal.url:http://localhost:4200}")
     private String portalUrl;
@@ -68,10 +74,14 @@ public class ExecutiveService {
 
         user = userRepository.save(user);
 
+        String token = UUID.randomUUID().toString();
+        redisTemplate.opsForValue().set("guest-activation:" + token, user.getEmail(), Duration.ofHours(72));
+
         WelcomeGuestMessage message = WelcomeGuestMessage.builder()
                 .email(user.getEmail())
                 .nombrePaciente(user.getFirstName() + " " + user.getLastName())
-                .portalUrl(portalUrl)
+                .portalUrl(activationUrl + "?token=" + token)
+                .phone(user.getPhone())
                 .build();
 
         rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.WELCOME_GUEST_ROUTING_KEY, message);
@@ -81,7 +91,12 @@ public class ExecutiveService {
 
     @Transactional
     public AuthResponse activateAccount(ActivateAccountRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
+        String email = redisTemplate.opsForValue().get("guest-activation:" + request.getToken());
+        if (email == null) {
+            throw new RuntimeException("Token de activación inválido o expirado");
+        }
+
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         if (user.getStatus() != UserStatus.GUEST) {
@@ -91,6 +106,8 @@ public class ExecutiveService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
         userRepository.save(user);
+
+        redisTemplate.delete("guest-activation:" + request.getToken());
 
         return AuthResponse.builder()
                 .email(user.getEmail())
