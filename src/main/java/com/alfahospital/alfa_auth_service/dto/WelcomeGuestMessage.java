@@ -11,4 +11,5 @@ public class WelcomeGuestMessage {
     private String email;
     private String nombrePaciente;
     private String portalUrl;
+    private String phone;
 }
