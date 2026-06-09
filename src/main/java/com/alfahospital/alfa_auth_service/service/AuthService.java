@@ -3,13 +3,8 @@ package com.alfahospital.alfa_auth_service.service;
 import com.alfahospital.alfa_auth_service.domain.UserStatus;
 import com.alfahospital.alfa_auth_service.domain.Role;
 import com.alfahospital.alfa_auth_service.domain.User;
-import com.alfahospital.alfa_auth_service.dto.AuthResponse;
-import com.alfahospital.alfa_auth_service.dto.LoginRequest;
-import com.alfahospital.alfa_auth_service.dto.RegisterRequest;
-import com.alfahospital.alfa_auth_service.dto.UserProfileResponse;
-import com.alfahospital.alfa_auth_service.dto.ForgotPasswordRequest;
-import com.alfahospital.alfa_auth_service.dto.ResetPasswordRequest;
-import com.alfahospital.alfa_auth_service.dto.PasswordResetMessage;
+import com.alfahospital.alfa_auth_service.dto.*;
+
 import com.alfahospital.alfa_auth_service.config.RabbitMQConfig;
 import com.alfahospital.alfa_auth_service.repository.UserRepository;
 import com.alfahospital.alfa_auth_service.util.TelefonoUtils;
@@ -60,6 +55,15 @@ public class AuthService {
                 .build();
 
         user = userRepository.save(user);
+
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.EXCHANGE,
+                RabbitMQConfig.USER_REGISTERED_ROUTING_KEY,
+                UserRegisteredMessage.builder()
+                        .pacienteId(user.getId())
+                        .pacienteEmail(user.getEmail())
+                        .idNumber(user.getIdNumber())
+                        .build());
 
         String token = jwtService.generateToken(user.getEmail(), user.getRole().name(), user.getId());
 

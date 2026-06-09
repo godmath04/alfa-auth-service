@@ -15,8 +15,10 @@ public class RabbitMQConfig {
     public static final String EXCHANGE                    = "alfa.exchange";
     public static final String PASSWORD_RESET_QUEUE        = "password.reset.queue";
     public static final String PASSWORD_RESET_ROUTING_KEY  = "password.reset.routing.key";
-    public static final String WELCOME_GUEST_QUEUE        = "welcome.guest.queue";
-    public static final String WELCOME_GUEST_ROUTING_KEY  = "welcome.guest.routing.key";
+    public static final String WELCOME_GUEST_QUEUE         = "welcome.guest.queue";
+    public static final String WELCOME_GUEST_ROUTING_KEY   = "welcome.guest.routing.key";
+    public static final String USER_REGISTERED_QUEUE       = "user.registered.queue";
+    public static final String USER_REGISTERED_ROUTING_KEY = "user.registered.routing.key";
 
     @Bean
     public Queue passwordResetQueue() {
@@ -41,6 +43,16 @@ public class RabbitMQConfig {
     @Bean
     public Binding bindingWelcomeGuest(Queue welcomeGuestQueue, DirectExchange exchange) {
         return BindingBuilder.bind(welcomeGuestQueue).to(exchange).with(WELCOME_GUEST_ROUTING_KEY);
+    }
+
+    @Bean
+    public Queue userRegisteredQueue() {
+        return new Queue(USER_REGISTERED_QUEUE, true);
+    }
+
+    @Bean
+    public Binding bindingUserRegistered(Queue userRegisteredQueue, DirectExchange exchange) {
+        return BindingBuilder.bind(userRegisteredQueue).to(exchange).with(USER_REGISTERED_ROUTING_KEY);
     }
 
     @Bean
