@@ -31,4 +31,34 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(10)")
+    @Builder.Default
+    private UserStatus status = UserStatus.ACTIVE;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "id_type")
+    private String idType;
+
+    @Column(name = "id_number")
+    private String idNumber;
+
+    @Column(name = "birth_date")
+    private String birthDate;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "gender")
+    private String gender;
+
+    @Lob
+    @Column(name = "profile_photo")
+    private byte[] profilePhoto;
+
+    @Column(name = "profile_photo_content_type", length = 50)
+    private String profilePhotoContentType;
 }

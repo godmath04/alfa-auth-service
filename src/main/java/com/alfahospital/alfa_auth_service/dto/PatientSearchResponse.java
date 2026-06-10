@@ -1,6 +1,5 @@
 package com.alfahospital.alfa_auth_service.dto;
 
-import com.alfahospital.alfa_auth_service.domain.Role;
 import lombok.*;
 
 @Getter
@@ -8,13 +7,13 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
-public class UserSummary {
-    private Long id;
-    private String email;
+public class PatientSearchResponse {
+    private Long   id;
     private String firstName;
     private String lastName;
-    private Role role;
+    private String email;
+    private String phone;
     private String idType;
     private String idNumber;
+    private String status;
 }

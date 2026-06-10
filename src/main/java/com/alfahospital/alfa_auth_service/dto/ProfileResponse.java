@@ -1,6 +1,5 @@
 package com.alfahospital.alfa_auth_service.dto;
 
-import com.alfahospital.alfa_auth_service.domain.Role;
 import lombok.*;
 
 @Getter
@@ -8,13 +7,19 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+public class ProfileResponse {
 
-public class UserSummary {
     private Long id;
     private String email;
     private String firstName;
     private String lastName;
-    private Role role;
+    private String phone;
     private String idType;
     private String idNumber;
+    private String birthDate;
+    private String city;
+    private String gender;
+    private String role;
+    private boolean hasProfilePhoto;
 }
+

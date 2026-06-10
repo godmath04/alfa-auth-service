@@ -1,9 +1,9 @@
 package com.alfahospital.alfa_auth_service.controller;
 
-import com.alfahospital.alfa_auth_service.dto.AuthResponse;
-import com.alfahospital.alfa_auth_service.dto.LoginRequest;
-import com.alfahospital.alfa_auth_service.dto.RegisterRequest;
+import com.alfahospital.alfa_auth_service.dto.*;
 import com.alfahospital.alfa_auth_service.service.AuthService;
+import com.alfahospital.alfa_auth_service.service.ExecutiveService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+    private final AuthService     authService;
+    private final ExecutiveService executiveService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
@@ -36,5 +37,22 @@ public class AuthController {
     public ResponseEntity<Boolean> validate(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         return ResponseEntity.ok(authService.validateToken(token));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Void> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/activate-account")
+    public ResponseEntity<AuthResponse> activateAccount(@Valid @RequestBody ActivateAccountRequest request) {
+        return ResponseEntity.ok(executiveService.activateAccount(request));
     }
 }

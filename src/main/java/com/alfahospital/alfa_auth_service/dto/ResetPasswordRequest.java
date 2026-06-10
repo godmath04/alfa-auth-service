@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponse {
-
+public class ResetPasswordRequest {
     private String token;
-    private String email;
-    private String role;
-    private String status;
+    private String newPassword;
 }

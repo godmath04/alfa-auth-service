@@ -26,7 +26,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/logout").permitAll()
                         .requestMatchers("/api/auth/validate").permitAll()
+                        .requestMatchers("/api/auth/forgot-password").permitAll()
+                        .requestMatchers("/api/auth/reset-password").permitAll()
                         .requestMatchers("/api/auth/admin/**").permitAll()
+                        .requestMatchers("/api/auth/internal/**").permitAll()
+                        .requestMatchers("/api/auth/profile/**").permitAll()
+                        .requestMatchers("/api/auth/ejecutivo/**").permitAll()
+                        .requestMatchers("/api/auth/activate-account").permitAll()
                         .anyRequest().authenticated()
                 );
 

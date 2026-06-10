@@ -9,15 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
+public class UserProfileResponse {
+    private Long id;
+    private String nombre;
+    private String apellido;
     private String email;
-    private String password;
-    private String firstName;
-    private String lastName;
     private String phone;
-    private String idType;
-    private String idNumber;
-    private String birthDate;
-    private String city;
-    private String gender;
 }
+
