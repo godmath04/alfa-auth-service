@@ -21,5 +21,5 @@ jobs:
             git -C alfa-auth-service pull
             git -C alfa-docker pull
             docker compose -f alfa-docker/docker-compose.prod.yml rm -sf auth-service || true
-            docker container prune -f
+            docker container prune -f || true
             docker compose -f alfa-docker/docker-compose.prod.yml up -d --build --no-deps auth-service
