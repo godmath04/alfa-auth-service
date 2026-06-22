@@ -6,6 +6,8 @@ import com.alfahospital.alfa_auth_service.domain.Role;
 import com.alfahospital.alfa_auth_service.domain.User;
 import com.alfahospital.alfa_auth_service.dto.*;
 import com.alfahospital.alfa_auth_service.repository.UserRepository;
+import com.alfahospital.alfa_auth_service.util.DocumentoUtils;
+import com.alfahospital.alfa_auth_service.util.TelefonoUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,6 +57,13 @@ public class ExecutiveService {
             throw new RuntimeException("Ya existe un usuario con esa cédula/pasaporte");
         }
 
+        boolean documentoValido = "cedula".equals(request.getIdType())
+                ? DocumentoUtils.esCedulaValida(request.getIdNumber())
+                : DocumentoUtils.esPasaporteValido(request.getIdNumber());
+        if (!documentoValido) {
+            throw new RuntimeException("Número de identificación inválido");
+        }
+
         String placeholderPassword = passwordEncoder.encode(UUID.randomUUID().toString());
 
         User user = User.builder()
@@ -62,7 +71,7 @@ public class ExecutiveService {
                 .password(placeholderPassword)
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
-                .phone(request.getPhone())
+                .phone(TelefonoUtils.normalizar(request.getPhone()))
                 .idType(request.getIdType())
                 .idNumber(request.getIdNumber())
                 .birthDate(request.getBirthDate())

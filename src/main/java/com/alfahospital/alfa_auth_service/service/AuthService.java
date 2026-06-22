@@ -7,6 +7,7 @@ import com.alfahospital.alfa_auth_service.dto.*;
 
 import com.alfahospital.alfa_auth_service.config.RabbitMQConfig;
 import com.alfahospital.alfa_auth_service.repository.UserRepository;
+import com.alfahospital.alfa_auth_service.util.DocumentoUtils;
 import com.alfahospital.alfa_auth_service.util.TelefonoUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -35,6 +36,16 @@ public class AuthService {
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("El email ya está registrado");
+        }
+        if (userRepository.existsByIdNumber(request.getIdNumber())) {
+            throw new RuntimeException("Ya existe un usuario con ese número de identificación");
+        }
+
+        boolean documentoValido = "cedula".equals(request.getIdType())
+                ? DocumentoUtils.esCedulaValida(request.getIdNumber())
+                : DocumentoUtils.esPasaporteValido(request.getIdNumber());
+        if (!documentoValido) {
+            throw new RuntimeException("Número de identificación inválido");
         }
 
         String normalizedPhone = TelefonoUtils.normalizar(request.getPhone());
