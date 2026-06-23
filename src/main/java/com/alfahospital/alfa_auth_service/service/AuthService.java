@@ -56,6 +56,18 @@ public class AuthService {
 
 
 
+        // Validar que sea mayor de 18 años
+        try {
+            java.time.LocalDate birthLocalDate = java.time.LocalDate.parse(request.getBirthDate());
+            if (java.time.Period.between(birthLocalDate, java.time.LocalDate.now()).getYears() < 18) {
+                throw new RuntimeException("Debes ser mayor de 18 años para registrarte");
+            }
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Fecha de nacimiento inválida");
+        }
+
         String normalizedPhone = TelefonoUtils.normalizar(request.getPhone());
 
         User user = User.builder()
