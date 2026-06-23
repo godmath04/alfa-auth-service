@@ -61,4 +61,8 @@ public class User {
 
     @Column(name = "profile_photo_content_type", length = 50)
     private String profilePhotoContentType;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @Builder.Default
+    private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
 }
