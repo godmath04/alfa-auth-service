@@ -174,6 +174,8 @@ public class AuthService {
                 .apellido(user.getLastName())
                 .email(user.getEmail())
                 .phone(user.getPhone())
+                .idType(user.getIdType())
+                .idNumber(user.getIdNumber())
                 .status(user.getStatus().name())
                 .build();
     }
@@ -188,6 +190,8 @@ public class AuthService {
                 .apellido(user.getLastName())
                 .email(user.getEmail())
                 .phone(user.getPhone())
+                .idType(user.getIdType())
+                .idNumber(user.getIdNumber())
                 .status(user.getStatus().name())
                 .build();
     }

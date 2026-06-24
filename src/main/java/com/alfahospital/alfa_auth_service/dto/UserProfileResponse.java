@@ -15,6 +15,8 @@ public class UserProfileResponse {
     private String apellido;
     private String email;
     private String phone;
+    private String idType;
+    private String idNumber;
     private String status;
 }
 
