@@ -5,5 +5,6 @@ public enum Role {
     MEDICO,
     EJECUTIVO,
     ADMINISTRADOR,
-    GERENCIA
+    GERENCIA,
+    TECNICO_LAB
 }
