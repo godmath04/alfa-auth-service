@@ -64,6 +64,18 @@ public class ExecutiveService {
             throw new RuntimeException("Número de identificación inválido");
         }
 
+        // Validar que sea mayor de 18 años
+        try {
+            java.time.LocalDate birthLocalDate = java.time.LocalDate.parse(request.getBirthDate());
+            if (java.time.Period.between(birthLocalDate, java.time.LocalDate.now()).getYears() < 18) {
+                throw new RuntimeException("El paciente debe ser mayor de 18 años");
+            }
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Fecha de nacimiento inválida");
+        }
+
         String placeholderPassword = passwordEncoder.encode(UUID.randomUUID().toString());
 
         User user = User.builder()
