@@ -19,7 +19,9 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Maven
-        run: ./mvnw clean verify -DskipTests
+        run: |
+          chmod +x mvnw
+          ./mvnw clean verify -DskipTests
 
   deploy:
     needs: ci
