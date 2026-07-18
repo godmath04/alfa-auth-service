@@ -55,7 +55,6 @@ public class AuthService {
         }
 
 
-
         // Validar que sea mayor de 18 años
         try {
             java.time.LocalDate birthLocalDate = java.time.LocalDate.parse(request.getBirthDate());
